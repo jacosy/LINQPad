@@ -6,11 +6,25 @@
 void Main()
 {
 	Console.WriteLine("------ Test Start ------");
+	Console.WriteLine(GetThreadInformation());
 	//Task.Run(()=> Console.WriteLine("task was done!"));
-	var logger = new SimpleLog(WindowsIdentity.GetCurrent().Name.Split('\\')[1]);
+	var logger = new SimpleLog(WindowsIdentity.GetCurrent().Name.Split('\\')[1]);	
 	logger.LogAsync();
+	Console.WriteLine("------ LogAsync Starts ------\n");
+	Console.WriteLine(GetThreadInformation());
 	Console.WriteLine("------ Test End ------");
-	Console.ReadLine();
+}
+
+public static string GetThreadInformation()
+{
+	StringBuilder sb = new StringBuilder();
+	sb.AppendLine($"Current Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+	sb.AppendLine($"Current Thread Name: {Thread.CurrentThread.Name}");
+	sb.AppendLine($"Current Thread IsBackground: {Thread.CurrentThread.IsBackground}");
+	sb.AppendLine($"Current Thread IsThreadPoolThread: {Thread.CurrentThread.IsThreadPoolThread}");
+	sb.AppendLine($"CurrentContext ID: {Thread.CurrentContext.ContextID}");
+	//sb.AppendLine($"Current Thread ExecutionContext: {Thread.CurrentThread.ExecutionContext}");
+	return sb.ToString();
 }
 
 // Define other methods and classes here
@@ -61,9 +75,10 @@ public class SimpleLog
 			logInfo.AppendLine("Log Action: Log");
 			logInfo.AppendLine($"LogUser: {this.LogUser}");
 			logInfo.AppendLine($"LogTime: {DateTime.Now}");
+			logInfo.AppendLine(GetThreadInformation());
 			logInfo.AppendLine();						
 			WriteToFile(logInfo.ToString());			
 			Console.WriteLine("Log Task was done!");
-		});
+		}).ConfigureAwait(false);
 	}
 }
