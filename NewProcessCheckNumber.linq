@@ -5,9 +5,13 @@ void Main()
 	var postQcTrimBr = new BusinessRuleEOBLockboxPostQCCheckNumberTrimming();
 	// get data
 	var mock = new MockObjects();
-	DataTable dt = mock.GetData();
 	// Process data base the formats
+	DataTable dt = mock.GetData();
 	postQcTrimBr.ProcessCheckNumber(dt, "19046,896D|27154,%**|LBW3CO,***%||test,");
+	
+	//DataTable dt = mock.GetData2();
+	//postQcTrimBr.ProcessCheckNumber(dt, "19046,%896D|27154,%2|LBW3CO,%40304");
+	
 	//postQcTrimBr.ProcessCheckNumber(dt, "");
 	dt.Dump();
 }
@@ -30,8 +34,34 @@ public class MockObjects
 		dt.Rows.Add("27154", "st");
 		dt.Rows.Add("LBW3CO", "7777CCC");
 		dt.Rows.Add("LBW3CO", "88888XXX");
-		dt.Rows.Add("LBW3CO", "11");
-		dt.Rows.Add("LBW3CO", "111");
+		dt.Rows.Add("LBW3CO", "99");
+		dt.Rows.Add("LBW3CO", "999");
+		dt.Rows.Add("test", "t e s t");
+		return dt;
+	}
+
+	public DataTable GetData2()
+	{
+		DataTable dt = new DataTable();
+		dt.Columns.Add("PayerID");
+		dt.Columns.Add("CheckNumber");
+		
+		dt.Rows.Add("19046", "896");
+		dt.Rows.Add("19046", "896D111111");
+		dt.Rows.Add("19046", "222222896D");
+		dt.Rows.Add("19046", "333896D333");
+		dt.Rows.Add("19046", "444444");
+		dt.Rows.Add("27154", "2T5555");
+		dt.Rows.Add("27154", "2S5555");
+		dt.Rows.Add("27154", "A2B6666");
+		dt.Rows.Add("27154", "AB66662");
+		dt.Rows.Add("27154", "S");
+		dt.Rows.Add("27154", "st");
+		dt.Rows.Add("LBW3CO", "77");
+		dt.Rows.Add("LBW3CO", "40304888");
+		dt.Rows.Add("LBW3CO", "99940304");
+		dt.Rows.Add("LBW3CO", "104030410");
+		dt.Rows.Add("LBW3CO", "4030");
 		return dt;
 	}
 }
@@ -90,6 +120,8 @@ public class BusinessRuleEOBLockboxPostQCCheckNumberTrimming
 // Define other methods and classes here
 public enum ProcessCheckNumberType
 {
+	TrimStartSpecific,
+	TrimEndSpecific,
 	TrimStart,
 	TrimEnd,
 	Replace,
@@ -100,6 +132,46 @@ public interface IProcessCheckNumberBehavior
 {
 	string Characters { get; }
 	string Process(string checkNumber);
+}
+
+public class TrimStartCheckNumberBySpecificCharacters : IProcessCheckNumberBehavior
+{
+	public string Characters { get; private set; }
+
+	public TrimStartCheckNumberBySpecificCharacters(string characters)
+	{
+		this.Characters = characters;
+	}
+
+	public string Process(string checkNumber)
+	{
+		string newCheckNumber = checkNumber;
+		if (checkNumber.Length >= Characters.Length)
+		{
+			newCheckNumber = checkNumber.TrimStart(Characters.ToCharArray());
+		}
+		return newCheckNumber;
+	}
+}
+
+public class TrimEndCheckNumberBySpecificCharacters : IProcessCheckNumberBehavior
+{
+	public string Characters { get; private set; }
+
+	public TrimEndCheckNumberBySpecificCharacters(string characters)
+	{
+		this.Characters = characters;
+	}
+
+	public string Process(string checkNumber)
+	{
+		string newCheckNumber = checkNumber;
+		if (checkNumber.Length >= Characters.Length)
+		{
+			newCheckNumber = checkNumber.TrimEnd(Characters.ToCharArray());
+		}
+		return newCheckNumber;
+	}
 }
 
 public class TrimStartCheckNumberByNumberOfStartSigns : IProcessCheckNumberBehavior
@@ -192,6 +264,17 @@ public class ProcessCheckNumberFactory : IProcessCheckNumberFactory
 				type = ProcessCheckNumberType.TrimEnd;
 			}
 		}
+		else
+		{
+			if (characters.StartsWith("%"))
+			{
+				type = ProcessCheckNumberType.TrimStartSpecific;
+			}
+			else if (characters.EndsWith("%"))
+			{
+				type = ProcessCheckNumberType.TrimEndSpecific;
+			}
+		}
 		return type;
 	}
 
@@ -226,6 +309,12 @@ public class ProcessCheckNumberFactory : IProcessCheckNumberFactory
 		IProcessCheckNumberBehavior behavior = null;
 		switch (processType)
 		{
+			case ProcessCheckNumberType.TrimStartSpecific:
+				behavior = new TrimStartCheckNumberBySpecificCharacters(newCharacters);
+				break;
+			case ProcessCheckNumberType.TrimEndSpecific:
+				behavior = new TrimEndCheckNumberBySpecificCharacters(newCharacters);
+				break;
 			case ProcessCheckNumberType.TrimStart:
 				behavior = new TrimStartCheckNumberByNumberOfStartSigns(newCharacters);
 				break;
