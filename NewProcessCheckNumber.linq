@@ -6,11 +6,11 @@ void Main()
 	// get data
 	var mock = new MockObjects();
 	// Process data base the formats
-	DataTable dt = mock.GetData();
-	postQcTrimBr.ProcessCheckNumber(dt, "19046,896D|27154,%**|LBW3CO,***%||test,");
+	//DataTable dt = mock.GetData();
+	//postQcTrimBr.ProcessCheckNumber(dt, "19046,896D|27154,%**|LBW3CO,***%||test,");
 	
-	//DataTable dt = mock.GetData2();
-	//postQcTrimBr.ProcessCheckNumber(dt, "19046,%896D|27154,%2|LBW3CO,%40304");
+	DataTable dt = mock.GetData2();
+	postQcTrimBr.ProcessCheckNumber(dt, "19046,%896D|27154,%2|LBW3CO,%40304");
 	
 	//postQcTrimBr.ProcessCheckNumber(dt, "");
 	dt.Dump();
@@ -52,7 +52,7 @@ public class MockObjects
 		dt.Rows.Add("19046", "333896D333");
 		dt.Rows.Add("19046", "444444");
 		dt.Rows.Add("27154", "2T5555");
-		dt.Rows.Add("27154", "2S5555");
+		dt.Rows.Add("27154", "22222S5555");
 		dt.Rows.Add("27154", "A2B6666");
 		dt.Rows.Add("27154", "AB66662");
 		dt.Rows.Add("27154", "S");
@@ -145,11 +145,7 @@ public class TrimStartCheckNumberBySpecificCharacters : IProcessCheckNumberBehav
 
 	public string Process(string checkNumber)
 	{
-		string newCheckNumber = checkNumber;
-		if (checkNumber.Length >= Characters.Length)
-		{
-			newCheckNumber = checkNumber.TrimStart(Characters.ToCharArray());
-		}
+		string newCheckNumber = checkNumber.StartsWith(Characters) ? checkNumber.Remove(0, Characters.Length) : checkNumber;
 		return newCheckNumber;
 	}
 }
@@ -165,11 +161,7 @@ public class TrimEndCheckNumberBySpecificCharacters : IProcessCheckNumberBehavio
 
 	public string Process(string checkNumber)
 	{
-		string newCheckNumber = checkNumber;
-		if (checkNumber.Length >= Characters.Length)
-		{
-			newCheckNumber = checkNumber.TrimEnd(Characters.ToCharArray());
-		}
+		string newCheckNumber = checkNumber.EndsWith(Characters) ? checkNumber.Remove(checkNumber.Length - Characters.Length, Characters.Length) : checkNumber;
 		return newCheckNumber;
 	}
 }
