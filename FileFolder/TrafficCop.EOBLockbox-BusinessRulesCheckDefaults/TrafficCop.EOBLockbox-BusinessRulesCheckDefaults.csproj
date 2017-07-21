@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0B7A282E-03C3-4DA3-A1DC-8C08E0822E87}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TrafficCop.EOBLockbox_BusinessRulesCheckDefaults</RootNamespace>
+    <AssemblyName>TrafficCop.EOBLockbox-BusinessRulesCheckDefaults</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FvTech.Api">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\FvTech.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="FvTech.Data">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\FvTech.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TrafficCop-Global">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop-Global.dll</HintPath>
+    </Reference>
+    <Reference Include="TrafficCop.Api">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="TrafficCop.Batch, Version=2.3.2305.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop.Batch.dll</HintPath>
+    </Reference>
+    <Reference Include="TrafficCop.Data">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="TrafficCop.FDF, Version=2.8.2804.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop.FDF.dll</HintPath>
+    </Reference>
+    <Reference Include="TrafficCop.Form">
+      <HintPath>..\_ven\FvTech\TrafficCopV2Core\TrafficCop.Form.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\_gui\version\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="BusinessRulePopulateBatchID.cs" />
+    <Compile Include="BusinessRulePopulateCheckTransactionID.cs" />
+    <Compile Include="BusinessRulePopulateClientCode.cs" />
+    <Compile Include="BusinessRulePopulateFVFacility.cs" />
+    <Compile Include="BusinessRulePopulateNoCheckType.cs" />
+    <Compile Include="BusinessRulePopulatePayerLive.cs" />
+    <Compile Include="BusinessRulePopulateCheckFunded.cs" />
+    <Compile Include="BusinessRulePopulatePaymentType.cs" />
+    <Compile Include="BusinessRulePopulateCheckProcessingType.cs" />
+    <Compile Include="BusinessRulePopulatePost.cs" />
+    <Compile Include="BusinessRuleDefaultCheckAmount.cs" />
+    <Compile Include="BusinessRulePopulateFacilityID.cs" />
+    <Compile Include="BusinessRulePopulateLockboxID.cs" />
+    <Compile Include="BusinessRulePopulatePrintServicesID.cs" />
+    <Compile Include="EOBLockboxBusinessRulesCheckDefaults.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
