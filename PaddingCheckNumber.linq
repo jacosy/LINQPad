@@ -58,10 +58,10 @@ public class BusinessRuleEOBLockboxPostQCPaddingCheckNumber
 
 	public BusinessRuleEOBLockboxPostQCPaddingCheckNumber(string ruleString)
 	{
-		GetRuleList(ruleString);
+		SetRuleList(ruleString);
 	}
 
-	private void GetRuleList(string ruleString)
+	private void SetRuleList(string ruleString)
 	{
 		RuleList = new List<PaddingRuleModel>();
 		string[] rules = ruleString.Split('|');
