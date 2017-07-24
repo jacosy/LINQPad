@@ -302,6 +302,7 @@ private List<ApiClass> GetBusinessRuleApis(Assembly apiAssembly, string apiNameS
 			.ForEach(fi =>
 			{
 				string apiName = fi.GetValue(instance).ToString();
+
 				apiList.Add(new ApiClass(apiNameSpace)
 				{
 					ApiType = StepType.BusinessRule,
@@ -309,7 +310,7 @@ private List<ApiClass> GetBusinessRuleApis(Assembly apiAssembly, string apiNameS
 					AttrName = apiName,
 					AttrDescription = instance.GetBusinessRulesInfo()
 											.FirstOrDefault(bri => bri.GetName() == apiName)
-											.GetName()
+											.GetDescription()
 				});
 			});
 	}
