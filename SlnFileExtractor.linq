@@ -34,9 +34,9 @@ void RegexTest()
 void SlnReader()
 {
 	string slnStr = File.ReadAllText("D:\\Programs\\TrafficCopV2API_PCI.sln").Replace(" ", "").Replace("\"", "");
-	
+
 	var reg = new Regex("(?:EndProject)");
-	
+
 	string[] projList = reg.Split(slnStr);
 	projList.Where(p => p.StartsWith(Environment.NewLine + "Project"))
 		.Select(p =>
@@ -46,12 +46,20 @@ void SlnReader()
 			string[] pInfo = p.Substring(startIdx, endIdx - startIdx).Split(',');
 			if (pInfo.Length == 2)
 			{
-				return new { Name = pInfo[0], Path = pInfo[1] };
+				string path = pInfo[1].Replace(@"\", @"\bin\Debug\")
+															.Replace("csproj", "dll")
+															.Replace("vsproj", "dll");
+				File.Move("D:\\Programs\\"+path, "D:\\Programs\\API_PCI\\DLLs");
+				return new
+				{
+					Name = pInfo[0],
+					Path = path
+				};
 			}
 			return null;
 		})
-		.Where(p=>p != null)
-		.Dump();
+		.Where(p => p != null)
+		.Dump();		
 
 //	projList.Dump();	
 //	projList.Select(p => {
