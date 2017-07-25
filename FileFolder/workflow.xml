@@ -1,0 +1,65 @@
+<Job Name="EOB Lockbox Step 2.wdf" Mode="ProviderPayEOB" Priority="50">
+  <Exports Step="Before">
+	<Export Assembly="TrafficCop.EobLockbox-BatchStatsBeforeExportdd.api" Enabled="True" Exception="Fail" AllowRepeats="False" UseTrigger="False" />
+	<Export Assembly="TrafficCop.EobLockbox-BatchStatsBeforeExport.api" Enabled="True" Exception="Fail" AllowRepeats="False" UseTrigger="False" />
+  </Exports>
+  <Exports Step="After">
+    <Export Assembly="TrafficCop.EOBLockbox-Step2FinalXmlExport.api" Enabled="True" Exception="Fail" AllowRepeats="True" UseTrigger="False">&lt;ExportData&gt;&lt;ExportDocumentSplitSettings&gt;&lt;Directory&gt;\\hq\files\Apps\V2\TempExp\EOBStaging\Step3Loader&lt;/Directory&gt;&lt;CreateAsSingle&gt;True&lt;/CreateAsSingle&gt;&lt;ClaimTemplateName&gt;EOBLockbox_Claim&lt;/ClaimTemplateName&gt;&lt;ClaimHeaderTemplateName&gt;EOBLockbox_Header&lt;/ClaimHeaderTemplateName&gt;&lt;LinesHeaderTemplateName&gt;EOBLockbox_LinesHeader&lt;/LinesHeaderTemplateName&gt;&lt;LinesTemplateName&gt;EOBLockbox_Lines&lt;/LinesTemplateName&gt;&lt;FooterTemplateName&gt;EOBLockbox_Footer&lt;/FooterTemplateName&gt;&lt;SingleCheckTemplateName&gt;EOBLockbox_SingleCheck&lt;/SingleCheckTemplateName&gt;&lt;PayerHeaderTemplateName&gt;EOBLockbox_PayerHeader&lt;/PayerHeaderTemplateName&gt;&lt;/ExportDocumentSplitSettings&gt;&lt;/ExportData&gt;</Export>
+    <Export Assembly="TrafficCop.EobLockbox-BatchStatsExport.api" Enabled="True" Exception="Fail" AllowRepeats="False" UseTrigger="False" />
+  </Exports>
+  <BatchEvents>
+    <Parameters />
+    <Event Assembly="TrafficCop.EOBLockbox-BatchEventsImagePreprocessingRouting.api" Enabled="True" />
+    <Event Assembly="TrafficCop.EOBLockbox-BatchEventsBatchTracking.api" Enabled="True" />
+    <Event Assembly="TrafficCop.EOBLockbox-BatchEventsClaimsClipStitch.api" Enabled="True" />
+  </BatchEvents>
+  <BatchData Status="">
+    <BatchFld0 />
+    <BatchFld1 />
+    <BatchFld2 />
+    <BatchFld3 />
+    <BatchFld4 />
+    <BatchFld5 />
+    <BatchFld6 />
+    <BatchFld7 />
+    <BatchFld8 />
+    <BatchFld9 />
+  </BatchData>
+  <Workflow>
+    <Step Index="1" TASK="ImagePreprocessing" TIMEOUT="0" StopPoint="NO" Distributed="YES" CacheSize="0" AllowSkip="False" Description="">
+      <CustomData>
+        <PreprocessingList>
+          <Process Name="Resize" Method="1" XResize="300" YResize="300" />
+          <Process Name="BordersDeskew" Crop="False" />
+          <Process Name="AutoPortraitUpright" />
+        </PreprocessingList>
+      </CustomData>
+    </Step>
+    <Step Index="2" TASK="DocumentAssembly" TIMEOUT="5" StopPoint="YES" Distributed="NO" CacheSize="0" AllowSkip="False" Description="">
+      <CustomData>
+        <DocumentAssembly Assembly="TrafficCop.Plugins-DocumentAssemblyPage.api" Enabled="True" Exception="Fail">&lt;DocAssem&gt;&lt;Mode&gt;All&lt;/Mode&gt;&lt;/DocAssem&gt;</DocumentAssembly>
+      </CustomData>
+    </Step>
+    <Step Index="3" TASK="BusinessRules" TIMEOUT="5" StopPoint="YES" Distributed="NO" CacheSize="0" AllowSkip="False" Description="">
+      <CustomData ByBatch="True">
+        <BusinessRules Rule="TrafficCop.EOBLockbox-BusinessRulesBatchNotes.EobLockbox Update Batch Notes" Enabled="True" Exception="Fail" />
+        <BusinessRules Rule="TrafficCop.EOBLockbox-BusinessRulesCheckQueueMapping.EOB Lockbox Check Queue Mapping" Enabled="True" Exception="Fail">&lt;BusinessRule&gt;&lt;BusinessRulesCheckQueueMappingSettings&gt;&lt;BatchDataNodeBusinessRule&gt;SetQueueNameStep2ClipStitchBR&lt;/BatchDataNodeBusinessRule&gt;&lt;BatchDataNodeQueueNameTracking&gt;True&lt;/BatchDataNodeQueueNameTracking&gt;&lt;FieldQueueNameTracking&gt;False&lt;/FieldQueueNameTracking&gt;&lt;/BusinessRulesCheckQueueMappingSettings&gt;&lt;/BusinessRule&gt;</BusinessRules>
+        <BusinessRules Rule="TrafficCop.EOBLockbox-BusinessRulesSetPriority.EOBLockbox Set Priorty" Enabled="True" Exception="Fail">&lt;BusinessRule&gt;&lt;BusinessRuleSetPrioritySettings&gt;&lt;BusinessRuleBaseSetting&gt;SetPriorityStep2&lt;/BusinessRuleBaseSetting&gt;&lt;ABFPriority&gt;50&lt;/ABFPriority&gt;&lt;PerformABFLogic&gt;True&lt;/PerformABFLogic&gt;&lt;/BusinessRuleSetPrioritySettings&gt;&lt;/BusinessRule&gt;</BusinessRules>
+      </CustomData>
+    </Step>
+    <Step Index="4" TASK="Verifier" TIMEOUT="8" StopPoint="YES" Distributed="NO" CacheSize="0" AllowSkip="False" Description="">
+      <CustomData Task="DocumentSplit" FormVerifierQueue="True" FormVerifierQueueType="BatchDataNode" FormVerifierQueueValue="SetQueueNameStep2ClipStitchQueueName" FormVerifierFVFs="EOBLockbox_Claim.fvf,EOBLockbox_Header.fvf,EOBLockbox_Footer.fvf,EOBLockbox_PayerHeader.fvf" FormPersistingVerifierFVFs="" />
+    </Step>
+    <Step Index="5" TASK="BusinessRules" TIMEOUT="10" StopPoint="YES" Distributed="NO" CacheSize="0" AllowSkip="False" Description="">
+      <CustomData ByBatch="True">
+        <BusinessRules Rule="TrafficCop.Plugins-BusinessRuleDocumentSplitOrdering.Document Split Ordering Sort Document Splits" Enabled="True" Exception="Fail">&lt;BusinessRule&gt;&lt;BusinessRuleSortDocumentSplitsSettings&gt;&lt;ExcludedTemplates&gt;EOBLockbox_Header,EOBLockbox_Footer&lt;/ExcludedTemplates&gt;&lt;/BusinessRuleSortDocumentSplitsSettings&gt;&lt;/BusinessRule&gt;</BusinessRules>
+        <BusinessRules Rule="TrafficCop.Plugins-BusinessRuleDocumentSplitOrdering.Document Split Ordering Separate Document Splits" Enabled="True" Exception="Fail">&lt;BusinessRule&gt;&lt;BusinessRuleSeparateDocumentSplitsSettings&gt;&lt;CheckTemplates&gt;&lt;/CheckTemplates&gt;&lt;HeaderTemplates&gt;EOBLockbox_Header&lt;/HeaderTemplates&gt;&lt;ClaimTemplates&gt;EOBLockbox_Claim&lt;/ClaimTemplates&gt;&lt;FooterTemplates&gt;EOBLockbox_Footer&lt;/FooterTemplates&gt;&lt;PayerHeaderTemplates&gt;EOBLockbox_PayerHeader&lt;/PayerHeaderTemplates&gt;&lt;/BusinessRuleSeparateDocumentSplitsSettings&gt;&lt;/BusinessRule&gt;</BusinessRules>
+      </CustomData>
+    </Step>
+    <Step Index="6" TASK="Export" TIMEOUT="60" StopPoint="YES" Distributed="NO" CacheSize="0" AllowSkip="False" Description="" />
+  </Workflow>
+  <FVFList />
+  <DefaultFVF>EOBLockbox_Header.fvf</DefaultFVF>
+  <QueueList />
+  <DefaultQueue />
+</Job>
