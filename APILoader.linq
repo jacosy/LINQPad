@@ -327,14 +327,13 @@ public ApiInfo LoadFromPath(string filePath)
 		// load assembly from path
 		Assembly apiAssembly = Assembly.LoadFrom(filePath);
 
-		string apiName = apiAssembly.GetName().Name;
-		info.ApiName = apiName;
-		info.ApiDetail.AddRange(GetBusinessRuleApis(apiAssembly, apiName));
-		info.ApiDetail.AddRange(GetBatchEventApis(apiAssembly, apiName));
-		info.ApiDetail.AddRange(GetFormEventApis(apiAssembly, apiName));
-		info.ApiDetail.AddRange(GetImportApis(apiAssembly, apiName));
-		info.ApiDetail.AddRange(GetExportApis(apiAssembly, apiName));
-		info.ApiDetail.AddRange(GetDocumentAssemblyApis(apiAssembly, apiName));		
+		info.ApiName = apiAssembly.GetName().Name;
+		info.ApiDetail.AddRange(GetBusinessRuleApis(apiAssembly, info.ApiName));
+		info.ApiDetail.AddRange(GetBatchEventApis(apiAssembly, info.ApiName));
+		info.ApiDetail.AddRange(GetFormEventApis(apiAssembly, info.ApiName));
+		info.ApiDetail.AddRange(GetImportApis(apiAssembly, info.ApiName));
+		info.ApiDetail.AddRange(GetExportApis(apiAssembly, info.ApiName));
+		info.ApiDetail.AddRange(GetDocumentAssemblyApis(apiAssembly, info.ApiName));		
 	}
 
 	return info;
@@ -342,7 +341,12 @@ public ApiInfo LoadFromPath(string filePath)
 
 public class ApiInfo
 {
-	public string ApiName { get; set; }
+	private string apiName;
+	public string ApiName
+	{
+		get { return apiName; } 
+		set { apiName = value + ".api"; } 
+	}
 	public List<ApiClass> ApiDetail { get; set; }
 }
 
