@@ -33,12 +33,13 @@ void RegexTest()
 
 void SlnReader()
 {
-	string slnStr = File.ReadAllText("D:\\Programs\\TrafficCopV2API_PCI.sln").Replace(" ", "").Replace("\"", "");
+	string slnStr = File.ReadAllText("D:\\LINQPad\\FileFolder\\TrafficCopV2API_PCI.sln").Replace(" ", "").Replace(Environment.NewLine, "");
 
 	var reg = new Regex("(?:EndProject)");
-
+//	var reg = new Regex("(?=Project\\([!-\\/:-@\\[-`{-~\\d\\w]*EndProject{1})");
 	string[] projList = reg.Split(slnStr);
-	projList.Where(p => p.StartsWith(Environment.NewLine + "Project"))
+	projList.Dump();
+	projList.Where(p => p.StartsWith("Project") || p.StartsWith("Microsoft Visual Studio Solution File, Format Version"))
 		.Select(p =>
 		{
 			int startIdx = p.IndexOf("=") + 1;
@@ -49,7 +50,7 @@ void SlnReader()
 				string path = pInfo[1].Replace(@"\", @"\bin\Debug\")
 															.Replace("csproj", "dll")
 															.Replace("vsproj", "dll");
-				File.Move("D:\\Programs\\"+path, "D:\\Programs\\API_PCI\\DLLs");
+				//File.Move("D:\\Programs\\"+path, "D:\\Programs\\API_PCI\\DLLs");
 				return new
 				{
 					Name = pInfo[0],
@@ -59,16 +60,5 @@ void SlnReader()
 			return null;
 		})
 		.Where(p => p != null)
-		.Dump();		
-
-//	projList.Dump();	
-//	projList.Select(p => {
-//		p.Split(',')
-//	});
-//	int startIdx = projStr.IndexOf("=") + 1;
-//	int endIdx = projStr.LastIndexOf(",");
-//
-//	projStr.Substring(startIdx, endIdx - startIdx).Dump();
-//
-//	reg.Split(slnStr).Dump();
+		.Dump();
 }
