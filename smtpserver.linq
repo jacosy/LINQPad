@@ -32,7 +32,6 @@ void Main()
 	};
 	Console.ReadLine();
 	server.Stop();
-	Math.Abs(Guid.NewGuid())
 }
 
 // Define other methods and classes here
